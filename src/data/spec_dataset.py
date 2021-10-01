@@ -12,6 +12,23 @@ from torchvision import transforms
 
 
 class SpecDataset(ParkinsonsDataset):
+    """
+    
+    pytorch Dataset for holding spirals or meanders for training.
+    
+    
+    args:
+    
+    root_dir --> Location of the images directory. Subdirectories of this directory should be 'HealthyMeander', 'HealthySpiral', 'PatientMeander', 'PatientSpiral'
+    test_type --> If 'Meander', then use meander signals for this dataset, if 'Spiral', then use spiral signals.
+    device --> Device where training will occur.
+    sig_transform --> Augmentations  to use on the raw signal
+    spec --> SpecFactory function to create spectrograms.
+    train_transform --> The transforms used during training.
+    test_transform --> The transforms used during testing and validation.
+    cache --> If True, put everything on device. If False, load separately each time.
+    
+    """
     def __init__(self, root_dir, test_type, device, sig_transform = None, spec = None, 
                  train_transform = None, test_transform = None, cache = False):
         super().__init__()

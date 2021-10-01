@@ -10,7 +10,24 @@ import numpy as np
 from PIL import Image
 
 
+
 class ImageDataset(ParkinsonsDataset):
+    """
+    
+    pytorch Dataset for holding spirals or meanders for training.
+    
+    
+    args:
+    
+    root_dir --> Location of the images directory. Subdirectories of this directory should be 'HealthyMeander', 'HealthySpiral', 'PatientMeander', 'PatientSpiral'
+    test_type --> If 'Meander', then use meander images for this dataset, if 'Spiral', then use spiral images.
+    device --> Device where training will occur.
+    train_transform --> The transforms used during training.
+    test_transform --> The transforms used during testing and validation.
+    preprocess -> Preprocessing transforms applied to each image.
+    cache --> If True, put everything on device. If False, load separately each time.
+    
+    """
     def __init__(self, root_dir, test_type, device, train_transform=None, test_transform=None, 
                  preprocess=None, cache=False):
         super().__init__()

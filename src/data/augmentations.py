@@ -4,7 +4,18 @@ from scipy.signal import spectrogram
 
 
 class SpecFactory():
-    def __init__(self, nperseg, noverlap, log=True, trim =0.0):
+    """
+    Creates a factory function to call a spectorgram on signal data. This is used in this project as a transformation function.
+    
+    args:
+    
+    nperseg --> Length of each segment to perform an fourier transform on
+    noverlap --> Number of overlapping points in each window of the spectrogram
+    log --> When True, take the logarithm of each location in the resulting spectrogram
+    trim --> Ratio of points to leave out in the higher frequencies.
+    
+    """
+    def __init__(self, nperseg, noverlap, log=True, trim = 0.0):
         self.nperseg = nperseg 
         self.noverlap = noverlap
         self.log = log
@@ -23,8 +34,20 @@ class SpecFactory():
         else:
             return Sxx
 
-class FreqMask(object):
-    def __init__(self, r = .1, n_blocks=1):
+class SpecMask(object):
+    """
+    Creates a factory function to mask blocks of a spectrogram to 0 along either the time or frequency dimension. To be used as an augmentation on spectrograms
+    
+    
+    args:
+    
+    freq --> If set to True, set a block of frequencies (rows) to 0. If false, set a block of times (columns) to 0
+    r --> Ratio of frequencies or times to set to 0 in a single block.
+    n_blocks --> Number of masks to apply (note that each block will use r as their ratio)
+    
+    """
+    def __init__(self, freq = True, r = .1, n_blocks=1):
+        self.freq = freq
         self.r = r
         self.n_blocks = n_blocks
 
@@ -33,25 +56,24 @@ class FreqMask(object):
         sz = int(n_freq * self.r)
         for _ in range(self.n_blocks):
             randint = np.random.randint(0, n_freq - sz + 1)
-            signal[:, randint:randint+sz, :] = 0
+            if self.freq:
+                signal[:, randint:randint+sz, :] = 0
+            else:
+                signal[:, :, randint:randint+sz] = 0
 
         return signal
 
-class TimeMask(object):
-    def __init__(self, r=.1, n_blocks=1):
-        self.r = r
-        self.n_blocks = n_blocks
-
-    def __call__(self, signal):
-        n_time = signal.shape[2]
-        sz = int(n_time * self.r)
-        for _ in range(self.n_blocks):
-            randint = np.random.randint(0, n_time - sz + 1)
-            signal[:, :, randint:randint+sz] = 0
-
-        return signal
 
 class SpecCrop(object):
+    """
+    
+    Factory function to be used as a transform for spectrograms. This class randomly crops out the same sized block from each spectrogram along the time dimension. If the time dimension is less than this standard size, then zeros are appended along the time dimension.
+    
+    args:
+    
+    sz --> The length of the time dimension (i.e. the number of fourier transforms considered).
+    
+    """
     def __init__(self, sz=10):
         self.sz = sz
         

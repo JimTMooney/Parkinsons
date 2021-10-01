@@ -8,6 +8,11 @@ import math
 
 
 class ParkinsonsDataset(Dataset):
+    """
+    Abstract class for use in handpd Signals and Images datasets.
+    
+    The main use of this class is for splitting a dataset into folds for use in cross validation.
+    """
     def __init__(self):
         self.device = None
         self.root_dir = None

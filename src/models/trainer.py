@@ -4,6 +4,20 @@ import torch
 from sklearn.metrics import confusion_matrix
 
 class Trainer():
+    """
+    
+    Class used for training networks.
+    
+    args:
+    
+    dataset --> The dataset to use for training
+    weight_decay --> weight_decay for use in AdamW optimizer
+    n_epochs --> number of epochs to train for
+    lr --> learning rate to use in training
+    log --> whether to log training/test metrics to files
+    
+    
+    """
     def __init__(self, dataset, weight_decay, n_epochs, lr=1e-3, log = False):
         self.dataset = dataset
         self.weight_decay = weight_decay
